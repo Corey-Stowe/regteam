@@ -64,5 +64,18 @@ class User extends Authenticatable
     public function check_user($discord_id){
         return $this->where('discord_id', $discord_id)->count();
     }
+    public function listUser(){
+        return $this->get();
+    }
+
+    public function getUserByDiscordId($discord_id){
+        return $this->where('discord_id', $discord_id)->first();
+    }
+    public function getUserV2($discord_id){
+        return $this->where('discord_id', $discord_id)
+        ->join('team_members', 'users.discord_id', '=', 'team_members.discord_uid')
+        ->join('teams', 'team_members.team_id', '=', 'teams.id')
+        ->first();
+    }
 
 }

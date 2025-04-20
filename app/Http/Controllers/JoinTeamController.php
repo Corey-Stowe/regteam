@@ -78,8 +78,28 @@ class JoinTeamController extends Controller
 
 
     public function Jointeam(Request $request){
+        $url = 'https://challenges.cloudflare.com/turnstile/v0/siteverify';
+        $data = [
+            'secret' => '0x4AAAAAAA51oAjVVMRqq3NWjNfGRL0nt1A',
+            'response' => $request->input('cf-turnstile-response'),
+        ];
+
+        $options = [
+            'http' => [
+                'header'  => "Content-type: application/x-www-form-urlencoded\r\n",
+                'method'  => 'POST',
+                'content' => http_build_query($data),
+            ],
+        ];
+
+        $context  = stream_context_create($options);
+       $result = file_get_contents($url, false, $context);
+
+       $response = json_decode($result);
+       if ($response->success) {
         $team_member = new TeamMember();
         $team_lead = new Team();
+
         $array_member = [
             'team_id' =>  $team_lead->where('team_code', $request->team_id)->first()->id,
             'discord_uid' => Auth::user()->discord_id,
@@ -90,5 +110,27 @@ class JoinTeamController extends Controller
         //dd($array_member);
         $team_member->createTeamMember($array_member);
         return redirect()->route('selecthub')->with('success', 'Tham gia nhóm thành công');
+
+    } else {
+        return redirect()->back()->with('error', 'Vui lòng xác minh bạn không phải là robot');
+    }
+    }
+
+    public function listteam()
+    {
+        $team = new Team();
+        $team_data = $team->listFullTeams();
+        //dd($team_data);
+        return view('join.listteam', compact('team_data'));
+    }
+
+
+    public function search(Request $request)
+    {
+        $team_name = $request->team_name;
+        $team = new Team();
+        $team_data = $team->searchTeam($team_name);
+        //dd($team_data);
+        return view('join.listteam', compact('team_data'));
     }
 }

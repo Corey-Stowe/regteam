@@ -5,15 +5,15 @@
 <!-- Mirrored from themesdesign.in/webadmin/layouts/layouts-horizontal.html by HTTrack Website Copier/3.x [XR&CO'2014], Fri, 15 Nov 2024 00:53:59 GMT -->
 <head>
     <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-6038511020735419"
-     crossorigin="anonymous"></script>
+    crossorigin="anonymous"></script>
 
-        <meta charset="utf-8" />
-        <meta name="google-adsense-account" content="ca-pub-6038511020735419">
-        <title>@yield('titile')</title>
-        <meta name="viewport" content="width=device-width, initial-scale=1.0">
-        <meta content="FuryCity Register Event" name="description" />
-        <title>FuryCity Register Event</title>
-        <meta content="Stowe" name="author" />
+    <meta charset="utf-8" />
+    <meta name="google-adsense-account" content="ca-pub-6038511020735419">
+    <title>@yield('titile')</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta content="FuryCity Register Event" name="description" />
+    <title>FuryCity Register Event</title>
+    <meta content="Stowe" name="author" />
         <!-- App favicon -->
         <link rel="shortcut icon" href="assets/images/favicon.ico">
 
@@ -31,28 +31,30 @@
 
     </head>
 <body>
-
-    <div class="page-content">
     <div class="container-fluid">
         @if ($errors->any())
-        <div class="alert alert-danger">
-            <ul>
-                @foreach ($errors->all() as $error)
-                    <li>{{ $error }}</li>
-                @endforeach
-            </ul>
-        </div>
-    @endif
-    @if (session('success'))
-        <div class="alert alert-success">
-            {{ session('success') }}
-        </div>
-    @endif
-    @if (session('error'))
-        <div class="alert alert-danger">
-            {{ session('error') }}
-        </div>
-    @endif
+            <div class="alert alert-danger">
+                <ul>
+                    @foreach ($errors->all() as $error)
+                        <li>{{ $error }}</li>
+                    @endforeach
+                </ul>
+            </div>
+        @endif
+        @if (session('success'))
+            <div class="alert alert-success">
+                {{ session('success') }}
+            </div>
+        @endif
+        @if (session('error'))
+            <div class="alert alert-danger">
+                {{ session('error') }}
+            </div>
+        @endif
+    </div>
+    <div class="page-content">
+
+    <div class="container-fluid">
         @yield('content')
     </div>
     <script src="{{ asset('assets/libs/bootstrap/js/bootstrap.bundle.min.js') }}"></script>

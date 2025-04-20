@@ -17,7 +17,9 @@ class LoginCheck
     public function handle(Request $request, Closure $next): Response
     {
 
+
         if(empty(Auth::user())){
+            session(['url.intended' => $request->url()]);
             return redirect()->route('login');
         } else {
             return $next($request);

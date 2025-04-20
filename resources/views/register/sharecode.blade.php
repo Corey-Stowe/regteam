@@ -5,6 +5,7 @@
         <div class="card mt-3">
             <div class="card-header">
                 <h4>Tạo tổ đội thành công</h4>
+                <h6 class="card-subtitle text-muted"><a href="{{ route('selecthub') }}"> <i class="bx bx-left-arrow-alt"></i> Quay trở về trang chủ </a></h6>
             </div>
             <div class="card-body">
                <div class="mb-3">

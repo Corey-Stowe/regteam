@@ -22,6 +22,7 @@ class MadeTeamController extends Controller
         return view('register.newteam');
     }
     public function create(Request $request){
+
         $request->validate([
             'team_name' => 'required|string|max:255',
             'fullname' => 'required|string|max:255',
@@ -62,34 +63,63 @@ class MadeTeamController extends Controller
         if($diff < 16){
             return redirect()->back()->with('error', 'Bạn chưa đủ tuổi để làm team leader, yêu cầu 16 tuổi trở lên');
         }
-        $crc_code = crc32($request->team_name);
-        $count = $team_lead->checkVaildTeamCode($crc_code);
-        if($count == 0){
-            $array = [
-                'team_name' => $request->team_name,
-                'team_leader_name' => $request->fullname,
-                'team_leader_email' => $request->email,
-                'team_leader_phone' => $request->phonenumber,
-                'team_leader_discord_uid' => $request->UID,
-                'tos_agreement' => 'true',
-                'team_status' => 'pending',
-                'team_code' => $crc_code
-            ];
-            $team_lead->createTeam($array);
-            $team_member = new TeamMember();
+                $url = 'https://challenges.cloudflare.com/turnstile/v0/siteverify';
+                $data = [
+                    'secret' => '0x4AAAAAAA51oAjVVMRqq3NWjNfGRL0nt1A',
+                    'response' => $request->input('cf-turnstile-response'),
+                ];
 
-            $array_member = [
-                'team_id' => $team_lead->where('team_code', $crc_code)->first()->id,
-                'discord_uid' => $request->UID,
-                'is_leader' => '1',
-                'status' => 'appected',
-                'team_code' => $crc_code
-            ];
-            $team_member->createTeamMember($array_member);
-            return redirect()->route('reg.success', ['id' => $crc_code]);
-        } else {
-           return redirect()->back()->with('error', 'Tên nhóm đã tồn tại');
-        }
+                $options = [
+                    'http' => [
+                        'header'  => "Content-type: application/x-www-form-urlencoded\r\n",
+                        'method'  => 'POST',
+                        'content' => http_build_query($data),
+                    ],
+                ];
+
+                $context  = stream_context_create($options);
+               $result = file_get_contents($url, false, $context);
+
+               $response = json_decode($result);
+               if ($response->success) {
+                    $crc_code = crc32($request->team_name);
+                    $count = $team_lead->checkVaildTeamCode($crc_code);
+                    if($request->public == "on"){
+                        $visibility = 1;
+                     } else {
+                         $visibility = 0;
+                     }
+                    if($count == 0){
+                        $array = [
+                            'team_name' => $request->team_name,
+                            'visibility' => $visibility,
+                            'team_leader_name' => $request->fullname,
+                            'team_leader_email' => $request->email,
+                            'team_leader_phone' => $request->phonenumber,
+                            'team_leader_discord_uid' => $request->UID,
+                            'tos_agreement' => 'true',
+                            'team_status' => 'pending',
+                            'team_code' => $crc_code
+                        ];
+                        $team_lead->createTeam($array);
+                        $team_member = new TeamMember();
+
+                        $array_member = [
+                            'team_id' => $team_lead->where('team_code', $crc_code)->first()->id,
+                            'discord_uid' => $request->UID,
+                            'is_leader' => '1',
+                            'status' => 'accepted',
+                            'team_code' => $crc_code
+                        ];
+                        $team_member->createTeamMember($array_member);
+                        return redirect()->route('reg.success', ['id' => $crc_code]);
+                    } else {
+                       return redirect()->back()->with('error', 'Tên nhóm đã tồn tại');
+                    }
+                } else {
+                    return redirect()->back()->with('error', 'Vui lòng xác minh bạn không phải là robot');
+                }
+
 
     }
     public function success($id)
@@ -100,5 +130,8 @@ class MadeTeamController extends Controller
             return redirect()->route('reg.new_team');
         }
         return view('register.sharecode', ['team' => $team_data]);
+    }
+    public function rules(){
+        return view('rule');
     }
 }

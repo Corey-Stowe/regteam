@@ -1,11 +1,11 @@
 @extends('layout.master')
 @section('content')
-    <div class="container-fluid">
+    <div class="container">
         <div class="row">
             <div class="card">
                 <div class="card-header">
                     <h4 class="card-title">Thông tin đội nhóm</h4>
-                    <h6 class="card-subtitle text-muted">Chỉ có quản lý nhóm mới hiện thông tin đầy đủ</h6>
+                    <h6 class="card-subtitle text-muted"><a href="{{ route('selecthub') }}"> <i class="bx bx-left-arrow-alt"></i> Quay trở về trang chủ </a></h6>
                 </div>
                 <div class="card-body">
                     <div class="row align-items-start">
@@ -13,6 +13,7 @@
                             <p><strong>Tên nhóm:</strong> {{ $team_info->team_name }}</p>
                             <p><strong>Mã nhóm:</strong> {{ $team_info->team_code }}</p>
                             <p><strong>Nhóm trưởng:</strong> {{ $team_info->name }}</p>
+                            <p>@if($team_info->visibility == 1) <strong>Hiển thị:</strong> <span class="badge badge-soft-success">Công Khai</span> @else <strong>Hiển Thị:</strong> <span class="badge badge-soft-danger">Riêng tư</span> @endif</p>
                             <p><strong>Trạng thái nhóm:</strong>
                                 @if ($team_info->team_status == 'full')
                                     <span class="badge badge-soft-primary">Đủ điều kiện</span>
@@ -29,6 +30,9 @@
                                     <p class="text-danger"><strong>Nhóm của bạn chưa đủ thành viên sẽ dẫn tới không đủ điều
                                             kiện tham gia </strong></p>
                                 @endif
+                                @if(isset($team_info->team_desc))
+                                <p><strong>Admin ghi chú:</strong><p class="text-danger"> {{ $team_info->team_desc }}</p></p>
+                            @endif
                             <p><strong>Thời gian tạo:</strong> {{ $team_info->created_at }}</p>
                         </div>
                         <div class="col-sm-5">
@@ -165,8 +169,18 @@
                                                         <tr>
                                                             <td>{{ $key + 1 }}</td>
                                                             <td>{{ $calendar->team_fight_date }}</td>
-                                                            <td>{{ $calendar->team_name}}</td>
-                                                            <td>{{ $calendar->team_fight_status}}</td>
+                                                            <td>{{ $calendar->opponent_team_name }} ({{ $calendar->opponent_team_leader_name}})</td>
+                                                            <td>
+                                                                @if ($calendar->team_fight_status == 'scheduled')
+                                                                    <span class="badge badge-soft-warning">Đã Lên lịch</span>
+                                                                @elseif ($calendar->team_fight_status == 'ongoing')
+                                                                    <span class="badge badge-soft-primary">đang thi đấu</span>
+                                                                @elseif ($calendar->team_fight_status == 'done')
+                                                                    <span class="badge badge-soft-success">Hoàn thành</span>
+                                                                @else
+                                                                    <span class="badge badge-soft-danger">Hủy bỏ</span>
+                                                                @endif
+                                                            </td>
                                                             <td>{{ $calendar->team_fight_note}}</td>
 
                                                         </tr>

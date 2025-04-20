@@ -1,10 +1,11 @@
 @extends('layout.master')
 @section('content')
-
+<script src="https://challenges.cloudflare.com/turnstile/v0/api.js" async defer></script>
 <div class="container">
     <div class="card mt-3">
         <div class="card-header">
             <h4>Xác nhận tham gia nhóm</h4>
+            <h6 class="card-subtitle text-muted"><a href="{{ route('selecthub') }}"> <i class="bx bx-left-arrow-alt"></i> Quay trở về trang chủ </a></h6>
         </div>
         <div class="card-body">
             <div class="mb-3">
@@ -58,6 +59,9 @@
                     <div class="invalid-feedback">
                         Vui lòng đồng ý nội quy tham gia.
                     </div>
+                </div>
+                <div class="mb-3">
+                    <div class="cf-turnstile" data-sitekey="0x4AAAAAAA51oAVj-uPMQ8vR"></div>
                 </div>
                 <button type="submit" class="btn btn-primary mt-3">Gia nhập</button>
             </form>

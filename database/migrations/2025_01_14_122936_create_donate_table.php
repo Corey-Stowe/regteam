@@ -15,6 +15,7 @@ return new class extends Migration
             $table->id();
             $table->string('trx_name');
             $table->integer('amount');
+            $table->string('description');
             $table->timestamps();
         });
     }

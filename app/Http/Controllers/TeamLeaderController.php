@@ -76,4 +76,27 @@ class TeamLeaderController extends Controller
         }
          return redirect()->route('selecthub')->with('success', 'Đã rời nhóm');
     }
+    public function updateTeam(Request $request)
+    {
+        if($request->team_id == null){
+            return redirect()->route('leader.dashboard')->with('error', 'Không tìm thấy nhóm');
+        }
+        if($request->team_name == null){
+            return redirect()->route('leader.dashboard')->with('error', 'Vui lòng nhập tên nhóm');
+        }
+        if($request->public == "on"){
+           $visibility = 1;
+        } else {
+            $visibility = 0;
+        }
+        $array = [
+            'team_name' => $request->team_name,
+            'visibility' => $visibility
+        ];
+        $team = new Team();
+        $team->updateTeam($request->team_id, $array);
+        return redirect()->route('leader.dashboard')->with('success', 'Đã cập nhật thông tin nhóm');
+    }
+
+
 }

@@ -5,8 +5,8 @@
             <div class="card">
                 <div class="card-header">
                     <h4 class="card-title">Thông tin đội nhóm</h4>
-                    <h6 class="card-subtitle text-muted"><a href="{{ route('selecthub') }}"> <i
-                                class="bx bx-left-arrow-alt"></i> Quay trở về trang chủ </a></h6>
+
+
                 </div>
                 <div class="card-body">
                     <div class="row align-items-start">
@@ -34,8 +34,8 @@
                                             kiện tham gia </strong></p>
                                 @endif
                                 @if(isset($team_info->team_desc))
-                                <p><strong>Admin ghi chú:</strong><p class="text-danger"> {{ $team_info->team_desc }}</p></p>
-                            @endif
+                                    <p><strong>Admin ghi chú:</strong><p class="text-danger"> {{ $team_info->team_desc }}</p></p>
+                                @endif
                             <p><strong>Thời gian tạo:</strong> {{ $team_info->created_at }}</p>
                         </div>
                         <div class="col-sm-5">
@@ -60,7 +60,7 @@
                                                 aria-label="Close"></button>
                                         </div>
                                         <div class="modal-body">
-                                            <form action="{{ route('leader.updateTeam') }}" method="POST">
+                                            <form action="{{ route('admin.updateTeam') }}" method="POST">
                                                 @csrf
                                                 <div class="mb-3">
                                                     <label for="team_name" class="form-label">Tên nhóm</label>
@@ -74,6 +74,21 @@
                                                         <label class="form-check-label" for="customSwitchsizemd">Công khai nhóm</label>
                                                     </div>
                                                     <p class="text-muted">Nếu chọn công khai nhóm, mọi người có thể tìm thấy nhóm của bạn và tham gia, nhưng vẫn phải cần bạn duyệt thành viên đó</p>
+                                                </div>
+                                                <div class="mb-3">
+                                                    <label for="team_status" class="form-label">Trạng thái nhóm</label>
+                                                    <select class="form-select" name="team_status">
+                                                        <option value="full" @if($team_info->team_status == 'full') selected @endif>Đủ điều kiện</option>
+                                                        <option value="approved" @if($team_info->team_status == 'approved') selected @endif>Đang hoạt động</option>
+                                                        <option value="elimated" @if($team_info->team_status == 'elimated') selected @endif>Bị loại</option>
+                                                        <option value="pending" @if($team_info->team_status == 'pending') selected @endif>Đang tìm đồng đội</option>
+                                                        <option value="notenough" @if($team_info->team_status == 'notenough') selected @endif>Không đủ điều kiện</option>
+                                                    </select>
+                                                </div>
+                                                <div class="mb-3">
+                                                    <label for="team_desc" class="form-label">Ghi chú</label>
+                                                    <textarea class="form-control" name="team_desc"
+                                                        rows="3">{{ $team_info->team_desc }}</textarea>
                                                 </div>
                                                 <input type="text" hidden name="team_id" value="{{ $team_info->team_code }}">
 
@@ -236,7 +251,39 @@
                                                                     </div>
                                                                 </div>
                                                             @else
-
+                                                                <button type="button" class="btn btn-danger"
+                                                                    data-bs-toggle="modal" data-bs-target="#modalId1">
+                                                                    Từ chối/loại thành viên
+                                                                </button>
+                                                                <!-- Modal -->
+                                                                <div class="modal fade" id="modalId1" tabindex="-1"
+                                                                    role="dialog" aria-labelledby="modalTitleId"
+                                                                    aria-hidden="true">
+                                                                    <div class="modal-dialog" role="document">
+                                                                        <div class="modal-content">
+                                                                            <div class="modal-header">
+                                                                                <h5 class="modal-title" id="modalTitleId">
+                                                                                    Loại thành viên
+                                                                                </h5>
+                                                                                <button type="button" class="btn-close"
+                                                                                    data-bs-dismiss="modal"
+                                                                                    aria-label="Close"></button>
+                                                                            </div>
+                                                                            <div class="modal-body">
+                                                                                <div class="container-fluid">
+                                                                                    <p class="text-danger">Bạn có chắc chắn
+                                                                                        muốn loại trừ / từ chối thành viên
+                                                                                        không</p>
+                                                                                    <p class="text-danger">Hành động này
+                                                                                        không thể hoàn tác</p>
+                                                                                </div>
+                                                                            </div>
+                                                                            <div class="modal-footer">
+                                                                                <button type="button"
+                                                                                    class="btn btn-success"
+                                                                                    data-bs-dismiss="modal">
+                                                                                    Hủy bỏ
+                                                                                </button>
                                                                                 <form
                                                                                     action="{{ route('leader.delete_member') }}"
                                                                                     method="post">
@@ -250,9 +297,12 @@
                                                                                     <button type="submit"
                                                                                         class="btn btn-danger">Loại trừ /
                                                                                         từ chối</button>
+
                                                                                 </form>
-
-
+                                                                            </div>
+                                                                        </div>
+                                                                    </div>
+                                                                </div>
                                                             @endif
 
 
@@ -297,24 +347,14 @@
                                                     </tr>
                                                 @else
                                                     @foreach ($team_calendar as $key => $calendar)
-                                                    <tr>
-                                                        <td>{{ $key + 1 }}</td>
-                                                        <td>{{ $calendar->team_fight_date }}</td>
-                                                        <td>{{ $calendar->opponent_team_name }} ({{ $calendar->opponent_team_leader_name}})</td>
-                                                        <td>
-                                                            @if ($calendar->team_fight_status == 'scheduled')
-                                                                <span class="badge badge-soft-warning">Đã Lên lịch</span>
-                                                            @elseif ($calendar->team_fight_status == 'ongoing')
-                                                                <span class="badge badge-soft-primary">đang thi đấu</span>
-                                                            @elseif ($calendar->team_fight_status == 'done')
-                                                                <span class="badge badge-soft-success">Hoàn thành</span>
-                                                            @else
-                                                                <span class="badge badge-soft-danger">Hủy bỏ</span>
-                                                            @endif
-                                                        </td>
-                                                        <td>{{ $calendar->team_fight_note}}</td>
+                                                        <tr>
+                                                            <td>{{ $key + 1 }}</td>
+                                                            <td>{{ $calendar->team_fight_date }}</td>
+                                                            <td>{{ $calendar->team_name }}</td>
+                                                            <td>{{ $calendar->team_fight_status }}</td>
+                                                            <td>{{ $calendar->team_fight_note }}</td>
 
-                                                    </tr>
+                                                        </tr>
                                                     @endforeach
                                                 @endif
                                             </tbody>

@@ -38,8 +38,8 @@ class TeamStrike extends Model
         $this->save();
     }
 
-    public function removeStrike($team_id, $strike_id)
+    public function removeStrike($team_id)
     {
-        $this->where('team_id', $team_id)->where('id', $strike_id)->delete();
+        return $this->where('team_id', $team_id)->delete();
     }
 }

@@ -1,13 +1,17 @@
 @extends('layout.master')
 @section('content')
+<script src="https://challenges.cloudflare.com/turnstile/v0/api.js" async defer></script>
+
     <div class="container">
         <div class="card">
             <div class="card-header">
                 <h4>Đăng ký team mới</h4>
+                <h6 class="card-subtitle text-muted"><a href="{{ route('selecthub') }}"> <i class="bx bx-left-arrow-alt"></i> Quay trở về trang chủ </a></h6>
             </div>
             <div class="card-body">
                 <form action="{{ route('reg.create_team') }}" method="post" class="needs-validation was-validated">
                     @csrf
+                    <input type="hidden" name="cf-turnstile-response" id="cf-turnstile-response">
                     <div class="mb-3">
                         <label for="url">Tên tổ đội</label>
                         <input type="text" class="form-control" name="team_name" id="validationTooltip03"
@@ -15,6 +19,14 @@
                         <div class="invalid-feedback">
                             Vui lòng nhập tên tổ đội.
                         </div>
+                    </div>
+                    <div class="mb-3">
+                        <div class="form-check form-switch form-switch-md mb-3" dir="ltr">
+                            <input type="checkbox" class="form-check-input" id="public"
+                                name="public" checked>
+                            <label class="form-check-label" for="customSwitchsizemd">Công khai nhóm</label>
+                        </div>
+                        <p class="text-muted">Nếu chọn công khai nhóm, mọi người có thể tìm thấy nhóm của bạn và tham gia, nhưng vẫn phải cần bạn duyệt thành viên đó</p>
                     </div>
                     <h4> Thông tin người đại diện </h4>
                     <div class="mb-3">
@@ -41,6 +53,7 @@
                             Vui lòng chọn ngày sinh
                         </div>
                     </div>
+
                     <div class="mb-3">
                         <label for="url">Discord Username</label>
                         <input type="text" class="form-control" name="discordusername" id="validationTooltip07"
@@ -101,9 +114,13 @@
                             Vui lòng đồng ý nội quy tham gia.
                         </div>
                     </div>
+                    <button type="submit" class="btn btn-primary mt-3">Đăng ký</button>
+                    <div class="mb-3">
+                        <div class="cf-turnstile" data-sitekey="0x4AAAAAAA51oAVj-uPMQ8vR"></div>
 
-                    <button type="submit" class="btn btn-primary mt-3">Đăng ký tổ đội mới</button>
+                    </div>
                 </form>
+
 
             </div>
         </div>
