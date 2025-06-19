@@ -8,6 +8,7 @@ use App\Http\Controllers\JoinTeamController;
 use App\Http\Controllers\MadeTeamController;
 use App\Http\Controllers\TeamchoiesController;
 use App\Http\Controllers\TeamLeaderController;
+use App\Http\Controllers\tftController;
 
 Route::controller(DiscordAuthController::class)
 ->group(function(){
@@ -15,47 +16,59 @@ Route::controller(DiscordAuthController::class)
 });
 Route::get('/', [MadeTeamController::class, 'index'])->name('selecthub')->middleware('login_check');
 Route::get('/login', [MadeTeamController::class, 'login'])->name('login');
-route::get('/rules', [MadeTeamController::class, 'rules'])->name('rules');
+// route::get('/rules', [MadeTeamController::class, 'rules'])->name('rules');
 
 Route::controller(MadeTeamController::class)
 ->name('reg.')
 ->prefix('register')
 ->middleware('login_check')
 ->group(function(){
+    route::get('new_member','registertft')->name('new_member');
     Route::get('select', 'index')->name('select');
-    Route::get('new_team', 'newTeam')->name('new_team');
-    Route::post('create_team', 'create')->name('create_team');
-    Route::get('success/{id}', 'success')->name('success');
+    Route::post('submit_tft', 'createRegistraion')->name('createRegistraion');
+    // Route::get('new_team', 'newTeam')->name('new_team');
+    // Route::post('create_team', 'create')->name('create_team');
+    // Route::get('success/{id}', 'success')->name('success');
 });
 
-Route::controller(JoinTeamController::class)
-->name('join.')
-->prefix('join')
+Route::controller(tftController::class)
+->name('tft.')
+->prefix('tft')
 ->middleware('login_check')
 ->group(function(){
-   route::get('join-team', 'index')->name('join_team');
-   route::post('join-team', 'jointeam_code')->name('join_team_detail');
-   route::get('invite/{code}', 'invite')->name('invite');
-   route::post('join', 'Jointeam')->name('accept');
-   route::get('listteam', 'listteam')->name('listteam');
-   route::get('search', 'search')->name('search');
-
-
+    route::get('/', 'index')->name('index');
+    route::post('unregister', 'unregister')->name('unregister');
+    route::post('confirm\{id}', 'confirm')->name('confirm');
 });
 
-Route::controller(TeamLeaderController::class)
-->name('leader.')
-->prefix('leader')
-->middleware(['login_check', 'team_leader'])
-->group(function(){
-    route::get('dashboard', 'index')->name('dashboard');
-    route::post('delete-team', 'DeleteTeam')->name('delteam');
-    route::post('delete-member', 'DeleteMember')->name('delete_member');
-    route::post('approve-member', 'ApproveMember')->name('approve_member');
-    route::post('reject-member', 'RejectMember')->name('reject_member');
-    route::post('leave-team', 'LeaveTeam')->name('leave_team');
-    route::post('update-team', 'updateTeam')->name('updateTeam');
-});
+// Route::controller(JoinTeamController::class)
+// ->name('join.')
+// ->prefix('join')
+// ->middleware('login_check')
+// ->group(function(){
+//    route::get('join-team', 'index')->name('join_team');
+//    route::post('join-team', 'jointeam_code')->name('join_team_detail');
+//    route::get('invite/{code}', 'invite')->name('invite');
+//    route::post('join', 'Jointeam')->name('accept');
+//    route::get('listteam', 'listteam')->name('listteam');
+//    route::get('search', 'search')->name('search');
+
+
+// });
+
+// Route::controller(TeamLeaderController::class)
+// ->name('leader.')
+// ->prefix('leader')
+// ->middleware(['login_check', 'team_leader'])
+// ->group(function(){
+//     route::get('dashboard', 'index')->name('dashboard');
+//     route::post('delete-team', 'DeleteTeam')->name('delteam');
+//     route::post('delete-member', 'DeleteMember')->name('delete_member');
+//     route::post('approve-member', 'ApproveMember')->name('approve_member');
+//     route::post('reject-member', 'RejectMember')->name('reject_member');
+//     route::post('leave-team', 'LeaveTeam')->name('leave_team');
+//     route::post('update-team', 'updateTeam')->name('updateTeam');
+// });
 
 
 Route::controller(DonnatController::class)
@@ -91,25 +104,32 @@ Route::controller(AdminController::class)
     Route::Post('manualCalendar','manualCalendar')->name('manualCalendar');
     Route::Post('findUserGroup','findGroup')->name('findUserGroup');
     Route::get('MatchReport/{id}','MatchReport')->name('MatchReport');
+    Route::get('addTftCalendar','addTftCalendar')->name('addTftCalendar');
+    Route::post('addTftCalendar','storeTftCalendar')->name('store_calendar');
+    Route::get('editTftCalendar/{id}','liveTftCalendar')->name('editTftCalendar');
+    Route::post('updateTftCalendar','updateTftCalendar')->name('updateTftCalendar');
+    Route::get('deleteTftCalendar/{id}','deleteTftCalendar')->name('deleteTftCalendar');
+    Route::get('userDetail/{id}','userTftDetail')->name('userTftDetail');
+    Route::get('userActivity/{id}','compareMatch')->name('userTftActivity');
 
 });
 
-Route::controller(TeamchoiesController::class)
-->name('vote.')
-->prefix('vote')
-->middleware(['login_check'])
-->group(function () {
-    route::get('/', 'index')->name('index');
-    route::post('up-vote', 'vote')->name('vote');
-});
+// Route::controller(TeamchoiesController::class)
+// ->name('vote.')
+// ->prefix('vote')
+// ->middleware(['login_check'])
+// ->group(function () {
+//     route::get('/', 'index')->name('index');
+//     route::post('up-vote', 'vote')->name('vote');
+// });
 
-Route::controller(TeamchoiesController::class)
-->name('admin.vote.')
-->prefix('admin/vote')
+// Route::controller(TeamchoiesController::class)
+// ->name('admin.vote.')
+// ->prefix('admin/vote')
 
-->middleware(['login_check', 'admin'])
-->group(function () {
-    route::get('/', 'listVote')->name('listVote');
-    route::post('update', 'updadateVote')->name('update');
+// ->middleware(['login_check', 'admin'])
+// ->group(function () {
+//     route::get('/', 'listVote')->name('listVote');
+//     route::post('update', 'updadateVote')->name('update');
 
-});
+// });

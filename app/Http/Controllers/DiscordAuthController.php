@@ -16,7 +16,6 @@ class DiscordAuthController extends Controller
         $auth = new DisordAuth();
         $data = $auth->Authuser($token);
         $checkGuild = $auth->getGuildList();
-        // dd($checkGuild);
 
         if (!is_object($data) || $data->id == null) {
             return redirect()->route('login')->with('error', 'Đăng nhập thất bại');

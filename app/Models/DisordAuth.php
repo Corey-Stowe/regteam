@@ -17,11 +17,15 @@ class DisordAuth extends Model
         $ch = curl_init();
         curl_setopt($ch, CURLOPT_URL, env('DISCORD_API_ENDPOINT') . '/oauth2/token');
         curl_setopt($ch, CURLOPT_POST, 1);
+        curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+        curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, true);
+        curl_setopt($ch, CURLOPT_SSL_VERIFYHOST, 2);
+        curl_setopt($ch, CURLOPT_CAINFO, storage_path('cacert.pem'));
         curl_setopt($ch, CURLOPT_HTTPHEADER, array('Content-Type: application/x-www-form-urlencoded'));
         curl_setopt($ch, CURLOPT_POSTFIELDS, 'client_id=' . env('DISCORD_CLIENT_ID') . '&client_secret=' . env('DISCORD_CLIENT_SECRET') . '&grant_type=authorization_code&code=' . $token . '&redirect_uri=' . env('DISCORD_REDIRECT') . '');
         curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
         $data_out = curl_exec($ch);
-       //dd($data_out);
+      // dd($data_out);
         curl_close($ch);
         $data = json_decode($data_out);
         //    dd($data);
@@ -31,6 +35,11 @@ class DisordAuth extends Model
             session(['access_token' => $data->access_token]);
             $ch = curl_init();
             curl_setopt($ch, CURLOPT_URL, env('DISCORD_API_ENDPOINT') . '/users/@me');
+        curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+        curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, true);
+        curl_setopt($ch, CURLOPT_SSL_VERIFYHOST, 2);
+        curl_setopt($ch, CURLOPT_CAINFO, storage_path('cacert.pem'));
+        curl_setopt($ch, CURLOPT_HTTPHEADER, array('Content-Type: application/x-www-form-urlencoded'));
             curl_setopt($ch, CURLOPT_HTTPHEADER, array('Authorization: Bearer ' . $data->access_token));
             curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
             $data_out = curl_exec($ch);
@@ -78,6 +87,11 @@ class DisordAuth extends Model
         if (isset($accessToken)) {
             $ch = curl_init();
             curl_setopt($ch, CURLOPT_URL, env('DISCORD_API_ENDPOINT') . '/users/@me/guilds');
+            curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+            curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, true);
+            curl_setopt($ch, CURLOPT_SSL_VERIFYHOST, 2);
+            curl_setopt($ch, CURLOPT_CAINFO, storage_path('cacert.pem'));
+            curl_setopt($ch, CURLOPT_HTTPHEADER, array('Content-Type: application/x-www-form-urlencoded'));
             curl_setopt($ch, CURLOPT_HTTPHEADER, array('Authorization: Bearer ' .  $accessToken));
             curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
             $data_out = curl_exec($ch);
